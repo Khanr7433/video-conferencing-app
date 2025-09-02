@@ -7,11 +7,11 @@ export async function connectDB() {
             return;
         }
 
-        const mongoUri = process.env.MONGO_DB_URI;
+        const mongoUri = process.env.MONGODB_URI;
         const databaseName = process.env.DATABASE_NAME;
 
         if (!mongoUri) {
-            throw new Error("MONGO_DB_URI environment variable is not found");
+            throw new Error("MONGODB_URI environment variable is not found");
         }
 
         if (!databaseName) {
@@ -24,7 +24,7 @@ export async function connectDB() {
 
         connection.on("connected", (conn) => {
             console.log(
-                "MongoDB connected successfully: ",
+                "🟢 MongoDB connected successfully: ",
                 conn.host,
                 conn.port
             );
@@ -32,13 +32,13 @@ export async function connectDB() {
 
         connection.on("error", (err) => {
             console.log(
-                "MongoDB connection error. Please make sure MongoDB is running. " +
+                "🔴 MongoDB connection error. Please make sure MongoDB is running. " +
                     err
             );
             process.exit();
         });
     } catch (error) {
-        console.log("Error connecting to MongoDB", error);
+        console.log("🔴 Error connecting to MongoDB", error);
         throw error;
     }
 }
