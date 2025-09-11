@@ -12,7 +12,6 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             unique: true,
-            index: true,
         },
         password: {
             type: String,
@@ -28,6 +27,7 @@ userSchema.pre("save", function (next) {
     if (this.isModified("password")) {
         this.password = bcrypt.hashSync(this.password, 10);
     }
+
     next();
 });
 
@@ -42,7 +42,7 @@ userSchema.methods.generateJWTToken = function () {
         },
         process.env.JWT_TOKEN_SECRET!,
         {
-            expiresIn: process.env.JWT_TOKEN_EXPIRY,
+            expiresIn: process.env.JWT_TOKEN_EXPIRY! || "7d",
         }
     );
     return token;
