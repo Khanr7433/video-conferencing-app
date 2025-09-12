@@ -36,13 +36,29 @@ userSchema.methods.comparePassword = function (password: string) {
 };
 
 userSchema.methods.generateJWTToken = function () {
+    const JWT_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET;
+
+    if (!JWT_TOKEN_SECRET) {
+        throw new Error(
+            "JWT_TOKEN_SECRET is not defined in environment variables"
+        );
+    }
+
+    const JWT_TOKEN_EXPIRY = process.env.JWT_TOKEN_EXPIRY;
+
+    if (!JWT_TOKEN_EXPIRY) {
+        throw new Error(
+            "JWT_TOKEN_EXPIRY is not defined in environment variables"
+        );
+    }
+
     const token = jwt.sign(
         {
             id: this._id,
         },
-        process.env.JWT_TOKEN_SECRET!,
+        JWT_TOKEN_SECRET,
         {
-            expiresIn: process.env.JWT_TOKEN_EXPIRY! || "7d",
+            expiresIn: JWT_TOKEN_EXPIRY || "7d",
         }
     );
     return token;

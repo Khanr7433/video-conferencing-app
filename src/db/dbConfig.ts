@@ -23,11 +23,7 @@ export async function connectDB() {
         const connection = mongoose.connection;
 
         connection.on("connected", (conn) => {
-            console.log(
-                "🟢 MongoDB connected successfully: ",
-                conn.host,
-                conn.port
-            );
+            console.log("🟢 MongoDB connected successfully: ", conn);
         });
 
         connection.on("error", (err) => {
