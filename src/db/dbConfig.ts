@@ -22,8 +22,8 @@ export async function connectDB() {
 
         const connection = mongoose.connection;
 
-        connection.on("connected", (conn) => {
-            console.log("🟢 MongoDB connected successfully: ", conn);
+        connection.on("connected", () => {
+            console.log("🟢 MongoDB connected successfully");
         });
 
         connection.on("error", (err) => {

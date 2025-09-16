@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const user = await User.findOne({ email }).select("-password");
+        const user = await User.findOne({ email });
 
         if (!user) {
             return NextResponse.json(
@@ -36,15 +36,28 @@ export async function POST(request: NextRequest) {
 
         const token = user.generateJWTToken();
 
-        return NextResponse.json(
+        const loggedInUser = await User.findById(user._id).select("-password");
+
+        if (!loggedInUser) {
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 }
+            );
+        }
+
+        const response = NextResponse.json(
             {
                 message: "User Logged in successfully",
-                user,
+                user: loggedInUser,
                 token,
                 success: true,
             },
             { status: 200 }
-        ).cookies.set("token", token, cookiesOptions);
+        );
+
+        response.cookies.set("token", token, cookiesOptions);
+
+        return response;
     } catch (error) {
         if (error instanceof Error) {
             return NextResponse.json({ error: error.message }, { status: 500 });
