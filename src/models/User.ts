@@ -54,8 +54,7 @@ userSchema.methods.generateJWTToken = function () {
     try {
         const token = jwt.sign(
             {
-                id: this._id.toString(),
-                email: this.email,
+                id: this._id,
             },
             JWT_TOKEN_SECRET,
             {
