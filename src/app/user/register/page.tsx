@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerSchema, type RegisterFormData } from "@/schemas";
 import { toast } from "react-hot-toast";
+import { apiClient } from "@/lib/api/client";
+import { AxiosError } from "axios";
 
 const RegisterPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -21,8 +23,7 @@ const RegisterPage = () => {
     const form = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
-            firstName: "",
-            lastName: "",
+            fullName: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -33,64 +34,51 @@ const RegisterPage = () => {
     const onSubmit = async (data: RegisterFormData) => {
         setIsLoading(true);
 
-        // Create loading toast
+        if (data.password !== data.confirmPassword) {
+            toast.error("Passwords do not match.");
+            setIsLoading(false);
+            return;
+        }
+
         const loadingToast = toast.loading("Creating your account...");
 
         try {
-            // Here you would make your API call
-            const response = await fetch("/api/user/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
+            const registrationData = {
+                fullName: data.fullName,
+                email: data.email,
+                password: data.password,
+            };
 
-            if (response.ok) {
-                // Handle success
-                toast.success(
-                    "Account created successfully! Welcome to VideoConf!",
-                    { id: loadingToast }
-                );
+            await apiClient.post("/api/user/register", registrationData);
 
-                // Reset form
-                form.reset();
-
-                // Redirect to login page after a short delay
-                setTimeout(() => {
-                    router.push("/user/login");
-                }, 2000);
-            } else {
-                // Handle different error scenarios
-                const errorData = await response.json();
-
-                if (response.status === 409) {
-                    toast.error(
-                        "This email is already registered. Please use a different email or try logging in.",
-                        { id: loadingToast }
-                    );
-                } else if (response.status === 400) {
-                    toast.error(
-                        errorData.message ||
-                            "Please check your information and try again.",
-                        { id: loadingToast }
-                    );
-                } else {
-                    toast.error(
-                        "Registration failed. Please try again later.",
-                        { id: loadingToast }
-                    );
-                }
-
-                console.error("Registration failed:", errorData);
-            }
-        } catch (error) {
-            toast.error(
-                "Network error. Please check your connection and try again.",
+            toast.success(
+                "Account created successfully! Welcome to VideoConf!",
                 { id: loadingToast }
             );
 
-            console.error("Registration error:", error);
+            form.reset();
+
+            setTimeout(() => {
+                router.push("/user/login");
+            }, 2000);
+        } catch (error: unknown) {
+            console.log("Registration error:", error);
+
+            if (error instanceof AxiosError) {
+                const errorMessage =
+                    error.response?.data?.message ||
+                    error.response?.data?.error ||
+                    error.message ||
+                    "Registration failed. Please try again later.";
+
+                toast.error(errorMessage, {
+                    id: loadingToast,
+                });
+            } else {
+                toast.error("An unexpected error occurred. Please try again.", {
+                    id: loadingToast,
+                });
+            }
         } finally {
             setIsLoading(false);
         }
@@ -122,43 +110,24 @@ const RegisterPage = () => {
                     className="space-y-4"
                 >
                     {/* Name Fields */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="firstName">First Name</Label>
-                            <Input
-                                id="firstName"
-                                placeholder="John"
-                                {...form.register("firstName")}
-                                className={
-                                    form.formState.errors.firstName
-                                        ? "border-destructive"
-                                        : ""
-                                }
-                            />
-                            {form.formState.errors.firstName && (
-                                <p className="text-sm text-destructive">
-                                    {form.formState.errors.firstName.message}
-                                </p>
-                            )}
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="lastName">Last Name</Label>
-                            <Input
-                                id="lastName"
-                                placeholder="Doe"
-                                {...form.register("lastName")}
-                                className={
-                                    form.formState.errors.lastName
-                                        ? "border-destructive"
-                                        : ""
-                                }
-                            />
-                            {form.formState.errors.lastName && (
-                                <p className="text-sm text-destructive">
-                                    {form.formState.errors.lastName.message}
-                                </p>
-                            )}
-                        </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="fullName">Full Name</Label>
+                        <Input
+                            id="fullName"
+                            placeholder="John"
+                            {...form.register("fullName")}
+                            className={
+                                form.formState.errors.fullName
+                                    ? "border-destructive"
+                                    : ""
+                            }
+                        />
+                        {form.formState.errors.fullName && (
+                            <p className="text-sm text-destructive">
+                                {form.formState.errors.fullName.message}
+                            </p>
+                        )}
                     </div>
 
                     {/* Email Field */}

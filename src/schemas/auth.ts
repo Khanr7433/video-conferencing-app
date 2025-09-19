@@ -20,16 +20,12 @@ const emailSchema = z
 // Register form schema
 export const registerSchema = z
     .object({
-        firstName: z
+        fullName: z
             .string()
-            .min(2, "First name must be at least 2 characters")
-            .max(50, "First name must be less than 50 characters")
+            .min(2, "Full name must be at least 2 characters")
+            .max(100, "Full name must be less than 100 characters")
             .trim(),
-        lastName: z
-            .string()
-            .min(2, "Last name must be at least 2 characters")
-            .max(50, "Last name must be less than 50 characters")
-            .trim(),
+
         email: emailSchema,
         password: passwordSchema,
         confirmPassword: z.string(),
