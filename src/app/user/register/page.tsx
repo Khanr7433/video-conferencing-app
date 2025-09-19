@@ -85,15 +85,14 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="bg-background flex min-h-screen items-center justify-center">
             <div className="w-full max-w-md space-y-6 p-6">
-                {/* Header */}
-                <div className="text-center space-y-2">
+                <div className="space-y-2 text-center">
                     <Link
                         href="/"
                         className="inline-flex items-center space-x-2"
                     >
-                        <Video className="h-8 w-8 text-primary" />
+                        <Video className="text-primary h-8 w-8" />
                         <span className="text-2xl font-bold">VideoConf</span>
                     </Link>
                     <h1 className="text-2xl font-semibold">
@@ -104,13 +103,10 @@ const RegisterPage = () => {
                     </p>
                 </div>
 
-                {/* Registration Form */}
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-4"
                 >
-                    {/* Name Fields */}
-
                     <div className="space-y-2">
                         <Label htmlFor="fullName">Full Name</Label>
                         <Input
@@ -124,13 +120,12 @@ const RegisterPage = () => {
                             }
                         />
                         {form.formState.errors.fullName && (
-                            <p className="text-sm text-destructive">
+                            <p className="text-destructive text-sm">
                                 {form.formState.errors.fullName.message}
                             </p>
                         )}
                     </div>
 
-                    {/* Email Field */}
                     <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
                         <Input
@@ -145,13 +140,12 @@ const RegisterPage = () => {
                             }
                         />
                         {form.formState.errors.email && (
-                            <p className="text-sm text-destructive">
+                            <p className="text-destructive text-sm">
                                 {form.formState.errors.email.message}
                             </p>
                         )}
                     </div>
 
-                    {/* Password Field */}
                     <div className="space-y-2">
                         <Label htmlFor="password">Password</Label>
                         <div className="relative">
@@ -170,7 +164,7 @@ const RegisterPage = () => {
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
                                 {showPassword ? (
@@ -181,13 +175,12 @@ const RegisterPage = () => {
                             </Button>
                         </div>
                         {form.formState.errors.password && (
-                            <p className="text-sm text-destructive">
+                            <p className="text-destructive text-sm">
                                 {form.formState.errors.password.message}
                             </p>
                         )}
                     </div>
 
-                    {/* Confirm Password Field */}
                     <div className="space-y-2">
                         <Label htmlFor="confirmPassword">
                             Confirm Password
@@ -208,7 +201,7 @@ const RegisterPage = () => {
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
                                 onClick={() =>
                                     setShowConfirmPassword(!showConfirmPassword)
                                 }
@@ -221,19 +214,18 @@ const RegisterPage = () => {
                             </Button>
                         </div>
                         {form.formState.errors.confirmPassword && (
-                            <p className="text-sm text-destructive">
+                            <p className="text-destructive text-sm">
                                 {form.formState.errors.confirmPassword.message}
                             </p>
                         )}
                     </div>
 
-                    {/* Terms Checkbox */}
                     <div className="flex items-center space-x-2">
                         <input
                             type="checkbox"
                             id="terms"
                             {...form.register("terms")}
-                            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                            className="text-primary focus:ring-primary h-4 w-4 rounded border-gray-300"
                         />
                         <Label htmlFor="terms" className="text-sm">
                             I agree to the{" "}
@@ -253,12 +245,11 @@ const RegisterPage = () => {
                         </Label>
                     </div>
                     {form.formState.errors.terms && (
-                        <p className="text-sm text-destructive">
+                        <p className="text-destructive text-sm">
                             {form.formState.errors.terms.message}
                         </p>
                     )}
 
-                    {/* Submit Button */}
                     <Button
                         type="submit"
                         className="w-full"
@@ -268,9 +259,8 @@ const RegisterPage = () => {
                     </Button>
                 </form>
 
-                {/* Footer */}
                 <div className="text-center">
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted-foreground text-sm">
                         Already have an account?{" "}
                         <Link
                             href="/user/login"
